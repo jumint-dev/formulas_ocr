@@ -48,7 +48,8 @@ class MinIOStorage:
         cls,
         file_data: bytes,
         file_name: str,
-        content_type: str = "application/octet-stream"
+        content_type: str = "application/octet-stream",
+        use_original_name: bool = False
     ) -> tuple[str, float]:
         """
         上传文件到MinIO
@@ -57,27 +58,31 @@ class MinIOStorage:
             file_data: 文件二进制数据
             file_name: 原始文件名
             content_type: 文件MIME类型
+            use_original_name: 是否使用原始文件名（默认使用UUID）
 
         Returns:
             (file_url, file_size): 文件URL和文件大小
         """
         client = cls.get_client()
 
-        # 生成唯一文件名
-        ext = file_name.rsplit(".", 1)[-1] if "." in file_name else ""
-        unique_name = f"{uuid.uuid4()}.{ext}" if ext else str(uuid.uuid4())
+        # 根据参数决定使用原始文件名还是生成唯一文件名
+        if use_original_name:
+            object_name = file_name
+        else:
+            ext = file_name.rsplit(".", 1)[-1] if "." in file_name else ""
+            object_name = f"{uuid.uuid4()}.{ext}" if ext else str(uuid.uuid4())
 
         # 上传文件
         client.put_object(
             bucket_name=settings.MINIO_BUCKET_NAME,
-            object_name=unique_name,
+            object_name=object_name,
             data=BytesIO(file_data),
             length=len(file_data),
             content_type=content_type
         )
 
         # 构建访问URL
-        file_url = cls._build_file_url(unique_name)
+        file_url = cls._build_file_url(object_name)
 
         return file_url, float(len(file_data))
 

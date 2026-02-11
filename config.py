@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # MongoDB配置
-    MONGODB_HOST: str = "127.0.0.1"
-    MONGODB_PORT: int = 27017
+    MONGODB_HOST: str = "172.21.0.3"
+    MONGODB_PORT: int = 37017
     MONGODB_USER: str = "root"
-    MONGODB_PASSWORD: str = "123456"
+    MONGODB_PASSWORD: str = "formulas"
     MONGODB_DATABASE: str = "ocr_parser"
     MONGODB_COLLECTION: str = "parser_list"
 
@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: str = "123.spsspro.com"
     MINIO_BUCKET_NAME: str = "oct-parser"
     MINIO_SECURE: bool = False
+
+    # MinerU配置
+    MINERU_API_URL: str = "https://mineru.net/api/v4"
+    MINERU_API_KEY: str = "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJqdGkiOiI0MzgwMDYxMyIsInJvbCI6IlJPTEVfUkVHSVNURVIiLCJpc3MiOiJPcGVuWExhYiIsImlhdCI6MTc3MDYwNzM0NiwiY2xpZW50SWQiOiJsa3pkeDU3bnZ5MjJqa3BxOXgydyIsInBob25lIjoiIiwib3BlbklkIjpudWxsLCJ1dWlkIjoiZmZmYzlmMDktYzJiYy00MzA3LTk5MDQtN2M1ODQ2ZjY4NmU3IiwiZW1haWwiOiIiLCJleHAiOjE3NzE4MTY5NDZ9.FX3J3dmsKLyuCAFSFsdQqLEQqIhoVv4VtSjpBL98eP0O25C_Xhttoq_C76F7BFewfB9hdjlVGmJbpziuDgc07w"  # 需要在.env中配置API密钥
 
     class Config:
         env_file = ".env"

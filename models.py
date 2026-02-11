@@ -49,18 +49,7 @@ class ParseDataCreate(BaseModel):
     name: str = Field(..., description="文件名称")
     size: float = Field(..., gt=0, description="文件大小")
     minio_url: Optional[str] = Field(None, description="MinIO文件URL")
-    json: Union[str, dict] = Field(..., description="解析后的JSON数据")
-
-    @field_validator('json', mode='before')
-    @classmethod
-    def parse_json(cls, v):
-        """将字符串JSON解析为字典"""
-        if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                raise ValueError("json字段格式错误，请传入有效的JSON字符串")
-        return v
+    json: Any = Field(..., description="解析后的JSON数据")
 
 
 class ParseDataListItem(BaseModel):
@@ -78,7 +67,7 @@ class ParseDataDetail(BaseModel):
     name: str = Field(description="文件名称")
     size: float = Field(description="文件大小")
     minio_url: Optional[str] = Field(None, description="MinIO文件URL")
-    json: dict = Field(description="解析后的JSON数据")
+    json: Any = Field(description="解析后的JSON数据")
     created_at: datetime = Field(description="创建时间")
     updated_at: datetime = Field(description="更新时间")
 
@@ -92,3 +81,22 @@ class MessageResponse(BaseModel):
 class ParseDataDB(ParseDataDetail):
     """数据库存储模型"""
     pass
+
+
+class ImageInfo(BaseModel):
+    """图片信息"""
+    name: str = Field(description="图片文件名")
+    path: str = Field(description="ZIP中的路径")
+    url: str = Field(description="MinIO访问URL")
+
+
+class MinerUExtractResult(BaseModel):
+    """MinerU解析结果"""
+    batch_id: str = Field(description="批次ID")
+    data_id: str = Field(description="数据ID")
+    file_name: str = Field(description="文件名")
+    file_url: str = Field(description="MinIO文件URL")
+    state: str = Field(description="状态: done/processing/failed")
+    err_msg: str = Field(default="", description="错误信息")
+    content_list: Optional[Any] = Field(None, description="content_list_v2.json内容")
+    image_urls: list[ImageInfo] = Field(default_factory=list, description="上传的图片列表")
